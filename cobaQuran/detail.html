@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Qur'an Digital</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar bg-dark navbar-dark">
+      <div class="container">
+        <span class="navbar-brand mb-0 h1">Qur'An Digital</span>
+        <a href=""><i class="bi bi-github"></i></a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <button id="btnScrollTop"><i class="bi bi-shift"></i></button>
+          <section class="atas mt-4" id="atas"></section>
+        </div>
+      </div>
+
+      <div class="container mb-5">
+        <div class="row">
+          <div class="col" id="cards"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function getUrlVars(param = null) {
+        if (param !== null) {
+          var vars = [],
+            hash;
+          var hashes = window.location.href
+            .slice(window.location.href.indexOf("?") + 1)
+            .split("&");
+          for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split("=");
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+          }
+          return vars[param];
+        } else {
+          return null;
+        }
+      }
+
+      const idSurah = getUrlVars("id");
+
+      const cards = document.getElementById("cards");
+      const atas = document.getElementById("atas");
+
+      const toTop = document.getElementById("btnScrollTop");
+
+      toTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        
+      });
+
+      fetch(
+        `https://raw.githubusercontent.com/penggguna/QuranJSON/master/surah/${idSurah}.json`
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          let data1 = "";
+
+          response.verses.forEach((element) => {
+            data1 += `<div class="card mt-5">
+              <div class="card-body">
+                <h5 class="card-title">${element.text}</h5>
+                <p class="card-text"><span class="nomor">${element.number}</span> 
+                     ${element.translation_id}</p>
+              </div>
+            </div>`;
+
+            cards.innerHTML = data1;
+          });
+
+          let data2 = ` <h3>${response.name}<span class="arab">(${response.name_translations.ar})</span></h3>
+            <h5>${response.number_of_ayah} Ayat <a href="index.html"> << Kembali </a></h5>
+            <div class="container mt-4">
+              <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                  <div class="alert alert-info" role="alert">
+                    <p>Murrotal by. ${response.recitations[0].name}</p>
+                    <audio src="${response.recitations[0].audio_url}" controls></audio>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+
+          atas.innerHTML = data2;
+        });
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+  * {
+    font-family: "Poppins", sans-serif;
+  }
+
+  nav a {
+    color: white;
+    font-size: 30px;
+  }
+
+  nav a:hover {
+    color: whitesmoke;
+  }
+
+  .card {
+    border: none;
+    border-radius: 0px;
+    border-bottom: 2px solid #333;
+  }
+
+  .card h5 {
+    float: right;
+    font-size: 39px;
+  }
+
+  .card p {
+    margin-top: 100px;
+  }
+
+  .atas a {
+    text-decoration: none;
+    margin-left: 10px;
+  }
+
+  .card .nomor {
+    background-color: #041c32;
+    color: white;
+    padding: 0 10px;
+    border-radius: 10px;
+  }
+
+  #btnScrollTop {
+    position: fixed;
+    right: 25px;
+    z-index: 100;
+    bottom: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgb(49, 67, 90);
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  #btnScrollTop:active {
+    background: #041c32;
+  }
+
+  @media (max-width: 767.98px) {
+    .atas h3 {
+      text-align: center;
+    }
+
+    .atas h5 {
+      text-align: center;
+    }
+
+    .atas p {
+      text-align: center;
+    }
+
+    .atas .alert {
+      text-align: center;
+    }
+  }
+</style>
